@@ -24,9 +24,7 @@ const App = () => (
           <Route path="/student-dashboard" element={<StudentDashboard />} />
           <Route path="/educator-dashboard" element={<EducatorDashboard />} />
           <Route path="/take-quiz" element={<TakeQuiz />} />
-          <Route path="/quiz-history" element={<Quiz
-
-istory />} />
+          <Route path="/quiz-history" element={<QuizHistory />} />
           <Route path="/login" element={<Index />} />
           <Route path="/signup" element={<Index />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
