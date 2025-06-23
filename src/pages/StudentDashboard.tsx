@@ -6,6 +6,14 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Trophy, Clock, TrendingUp, Play, History, User, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { MultiThemeToggle } from "@/components/MultiThemeToggle";
+import { NotificationCenter } from "@/components/NotificationCenter";
+import { DailyTasks } from "@/components/DailyTasks";
+import { AIAssistant } from "@/components/AIAssistant";
+import { SmartContentCreation } from "@/components/SmartContentCreation";
+import { AILearningPaths } from "@/components/AILearningPaths";
+import { Contact } from "@/components/Contact";
 
 const StudentDashboard = () => {
   const [currentStreak, setCurrentStreak] = useState(7);
@@ -13,22 +21,22 @@ const StudentDashboard = () => {
   const [avgScore, setAvgScore] = useState(85);
 
   const recentQuizzes = [
-    { id: 1, subject: "Mathematics", topic: "Algebra", score: 92, date: "2024-01-20", status: "completed" },
-    { id: 2, subject: "Science", topic: "Physics", score: 78, date: "2024-01-19", status: "completed" },
-    { id: 3, subject: "History", topic: "World War II", score: 95, date: "2024-01-18", status: "completed" },
-    { id: 4, subject: "Mathematics", topic: "Geometry", score: null, date: "2024-01-21", status: "in-progress" }
+    { id: 1, subject: "Computer Science", topic: "Python Programming", score: 92, date: "2024-01-20", status: "completed" },
+    { id: 2, subject: "Mathematics", topic: "Calculus", score: 78, date: "2024-01-19", status: "completed" },
+    { id: 3, subject: "Engineering", topic: "Thermodynamics", score: 95, date: "2024-01-18", status: "completed" },
+    { id: 4, subject: "Computer Science", topic: "JavaScript", score: null, date: "2024-01-21", status: "in-progress" }
   ];
 
   const suggestedTopics = [
-    { subject: "Mathematics", topic: "Trigonometry", difficulty: "Medium" },
-    { subject: "Science", topic: "Chemistry Basics", difficulty: "Easy" },
-    { subject: "English", topic: "Essay Writing", difficulty: "Hard" }
+    { subject: "Computer Science", topic: "Python Data Structures", difficulty: "Medium" },
+    { subject: "Mathematics", topic: "Linear Algebra", difficulty: "Easy" },
+    { subject: "Engineering", topic: "Circuit Analysis", difficulty: "Hard" }
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-50">
+      <header className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to="/" className="flex items-center space-x-2">
@@ -38,9 +46,12 @@ const StudentDashboard = () => {
               </span>
             </Link>
             <div className="flex items-center space-x-4">
+              <NotificationCenter />
+              <MultiThemeToggle />
+              <ThemeToggle />
               <div className="flex items-center space-x-2">
-                <User className="h-5 w-5 text-gray-600" />
-                <span className="text-sm font-medium text-gray-700">Student Portal</span>
+                <User className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Student Portal</span>
               </div>
               <Button variant="outline" size="sm">
                 <LogOut className="h-4 w-4 mr-2" />
@@ -54,8 +65,8 @@ const StudentDashboard = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome back, Alex!</h1>
-          <p className="text-gray-600">Ready to continue your learning journey?</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Welcome back!</h1>
+          <p className="text-gray-600 dark:text-gray-300">Ready to continue your learning journey?</p>
         </div>
 
         {/* Stats Cards */}
@@ -106,9 +117,10 @@ const StudentDashboard = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Quick Actions */}
-          <div className="lg:col-span-1">
-            <Card className="mb-6">
+          {/* Left Column */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Quick Actions */}
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Play className="h-5 w-5 mr-2 text-blue-600" />
@@ -125,36 +137,22 @@ const StudentDashboard = () => {
                     Quiz History
                   </Link>
                 </Button>
-                <Button variant="outline" className="w-full">
-                  Sync Google Classroom
+                <Button variant="outline" className="w-full" asChild>
+                  <Link to="/ai-quiz-generator">Generate AI Quiz</Link>
                 </Button>
               </CardContent>
             </Card>
 
-            {/* Suggested Topics */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Suggested Topics</CardTitle>
-                <CardDescription>AI-recommended based on your progress</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {suggestedTopics.map((topic, index) => (
-                  <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                    <div>
-                      <p className="font-medium text-sm">{topic.topic}</p>
-                      <p className="text-xs text-gray-600">{topic.subject}</p>
-                    </div>
-                    <Badge variant={topic.difficulty === 'Easy' ? 'secondary' : topic.difficulty === 'Medium' ? 'default' : 'destructive'}>
-                      {topic.difficulty}
-                    </Badge>
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
+            {/* Daily Tasks */}
+            <DailyTasks />
+            
+            {/* AI Assistant */}
+            <AIAssistant />
           </div>
 
-          {/* Recent Activity */}
-          <div className="lg:col-span-2">
+          {/* Middle Column */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Recent Activity */}
             <Card>
               <CardHeader>
                 <CardTitle>Recent Quiz Activity</CardTitle>
@@ -163,15 +161,15 @@ const StudentDashboard = () => {
               <CardContent>
                 <div className="space-y-4">
                   {recentQuizzes.map((quiz) => (
-                    <div key={quiz.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors">
+                    <div key={quiz.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                       <div className="flex-1">
                         <div className="flex items-center space-x-3">
                           <div className="flex-shrink-0">
                             <BookOpen className="h-8 w-8 text-blue-600" />
                           </div>
                           <div>
-                            <h3 className="font-medium text-gray-900">{quiz.topic}</h3>
-                            <p className="text-sm text-gray-600">{quiz.subject}</p>
+                            <h3 className="font-medium text-gray-900 dark:text-white">{quiz.topic}</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">{quiz.subject}</p>
                             <p className="text-xs text-gray-500">{quiz.date}</p>
                           </div>
                         </div>
@@ -195,8 +193,17 @@ const StudentDashboard = () => {
               </CardContent>
             </Card>
 
+            {/* Smart Content Creation */}
+            <SmartContentCreation />
+          </div>
+
+          {/* Right Column */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Learning Paths */}
+            <AILearningPaths />
+            
             {/* Progress Overview */}
-            <Card className="mt-6">
+            <Card>
               <CardHeader>
                 <CardTitle>Learning Progress</CardTitle>
                 <CardDescription>Your progress across different subjects</CardDescription>
@@ -204,34 +211,37 @@ const StudentDashboard = () => {
               <CardContent className="space-y-4">
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm font-medium">Mathematics</span>
-                    <span className="text-sm text-gray-600">78%</span>
+                    <span className="text-sm font-medium">Computer Science</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">88%</span>
                   </div>
-                  <Progress value={78} className="h-2" />
+                  <Progress value={88} className="h-2" />
                 </div>
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm font-medium">Science</span>
-                    <span className="text-sm text-gray-600">65%</span>
+                    <span className="text-sm font-medium">Mathematics</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">75%</span>
+                  </div>
+                  <Progress value={75} className="h-2" />
+                </div>
+                <div>
+                  <div className="flex justify-between mb-2">
+                    <span className="text-sm font-medium">Engineering</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">65%</span>
                   </div>
                   <Progress value={65} className="h-2" />
                 </div>
                 <div>
                   <div className="flex justify-between mb-2">
-                    <span className="text-sm font-medium">History</span>
-                    <span className="text-sm text-gray-600">92%</span>
-                  </div>
-                  <Progress value={92} className="h-2" />
-                </div>
-                <div>
-                  <div className="flex justify-between mb-2">
-                    <span className="text-sm font-medium">English</span>
-                    <span className="text-sm text-gray-600">54%</span>
+                    <span className="text-sm font-medium">Physics</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">54%</span>
                   </div>
                   <Progress value={54} className="h-2" />
                 </div>
               </CardContent>
             </Card>
+
+            {/* Contact */}
+            <Contact />
           </div>
         </div>
       </div>
