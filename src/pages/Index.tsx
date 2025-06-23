@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,9 +14,16 @@ const Index = () => {
   const navigate = useNavigate();
 
   const handleStartLearning = () => {
-    const newQuiz = generateQuiz();
-    setCurrentQuiz(newQuiz);
-    navigate('/take-quiz');
+    console.log("Start Learning button clicked!");
+    try {
+      const newQuiz = generateQuiz();
+      console.log("Generated quiz:", newQuiz);
+      setCurrentQuiz(newQuiz);
+      console.log("Quiz set in context, navigating to /take-quiz");
+      navigate('/take-quiz');
+    } catch (error) {
+      console.error("Error in handleStartLearning:", error);
+    }
   };
 
   return (
@@ -93,15 +99,9 @@ const Index = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {user?.role === 'student' ? (
-                  <Button className="w-full" size="lg" onClick={handleStartLearning}>
-                    Start Learning
-                  </Button>
-                ) : (
-                  <Button className="w-full" size="lg" onClick={handleStartLearning}>
-                    Start Learning
-                  </Button>
-                )}
+                <Button className="w-full" size="lg" onClick={handleStartLearning}>
+                  Start Learning
+                </Button>
               </CardContent>
             </Card>
 
