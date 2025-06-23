@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,6 +14,7 @@ import QuizHistory from "./pages/QuizHistory";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
+import AIQuizGenerator from "./pages/AIQuizGenerator";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +33,7 @@ const App = () => (
                 <Route path="/educator-dashboard" element={<EducatorDashboard />} />
                 <Route path="/take-quiz" element={<TakeQuiz />} />
                 <Route path="/quiz-history" element={<QuizHistory />} />
+                <Route path="/ai-quiz-generator" element={<AIQuizGenerator />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

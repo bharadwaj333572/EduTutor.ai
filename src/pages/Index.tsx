@@ -26,6 +26,14 @@ const Index = () => {
     }
   };
 
+  const handleGoogleClassroom = () => {
+    window.open('https://classroom.google.com', '_blank');
+  };
+
+  const handleAIQuizzes = () => {
+    navigate('/ai-quiz-generator');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Navigation */}
@@ -118,6 +126,39 @@ const Index = () => {
                   <Link to={user?.role === 'educator' ? '/educator-dashboard' : '/login'}>
                     View Analytics
                   </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Additional Options */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-12">
+            <Card className="cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 hover:border-green-300 dark:hover:border-green-600">
+              <CardHeader className="text-center">
+                <GraduationCap className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                <CardTitle className="text-2xl">Google Classroom</CardTitle>
+                <CardDescription>
+                  Access your Google Classroom directly
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full" size="lg" variant="outline" onClick={handleGoogleClassroom}>
+                  Open Classroom
+                </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="cursor-pointer transition-all duration-300 hover:shadow-lg hover:scale-105 border-2 hover:border-orange-300 dark:hover:border-orange-600">
+              <CardHeader className="text-center">
+                <Brain className="h-12 w-12 text-orange-600 mx-auto mb-4" />
+                <CardTitle className="text-2xl">AI Generated Quizzes</CardTitle>
+                <CardDescription>
+                  Create custom quizzes from your text content
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full" size="lg" variant="outline" onClick={handleAIQuizzes}>
+                  Generate Quizzes
                 </Button>
               </CardContent>
             </Card>
