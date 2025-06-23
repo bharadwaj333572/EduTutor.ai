@@ -1,5 +1,4 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -7,53 +6,38 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { BookOpen, Clock, ChevronLeft, ChevronRight, Check } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useQuiz } from "@/contexts/QuizContext";
+import { generateQuiz } from "@/services/quizGenerator";
 
 const TakeQuiz = () => {
+  const { currentQuiz, setCurrentQuiz } = useQuiz();
+  const navigate = useNavigate();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState("");
   const [answers, setAnswers] = useState<string[]>([]);
   const [timeLeft, setTimeLeft] = useState(180); // 3 minutes
   const [quizCompleted, setQuizCompleted] = useState(false);
 
-  const quiz = {
-    title: "Algebra Fundamentals",
-    subject: "Mathematics",
-    difficulty: "Medium",
-    totalQuestions: 5,
-    questions: [
-      {
-        id: 1,
-        question: "What is the value of x in the equation 2x + 5 = 13?",
-        options: ["x = 4", "x = 6", "x = 8", "x = 9"],
-        correct: "x = 4"
-      },
-      {
-        id: 2,
-        question: "Simplify: 3(x + 2) - 2x",
-        options: ["x + 6", "x + 4", "5x + 6", "3x + 2"],
-        correct: "x + 6"
-      },
-      {
-        id: 3,
-        question: "If y = 2x + 3, what is y when x = 5?",
-        options: ["11", "13", "15", "17"],
-        correct: "13"
-      },
-      {
-        id: 4,
-        question: "Factor: x² - 9",
-        options: ["(x + 3)(x - 3)", "(x + 9)(x - 1)", "(x - 3)²", "Cannot be factored"],
-        correct: "(x + 3)(x - 3)"
-      },
-      {
-        id: 5,
-        question: "Solve for x: x/4 + 3 = 7",
-        options: ["x = 12", "x = 16", "x = 20", "x = 24"],
-        correct: "x = 16"
-      }
-    ]
-  };
+  // If no quiz is loaded, generate one or redirect
+  useEffect(() => {
+    if (!currentQuiz) {
+      const newQuiz = generateQuiz();
+      setCurrentQuiz(newQuiz);
+    }
+  }, [currentQuiz, setCurrentQuiz]);
+
+  // If still no quiz after effect, show loading or redirect
+  if (!currentQuiz) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p>Generating your quiz...</p>
+        </div>
+      </div>
+    );
+  }
 
   const handleAnswerSelect = (answer: string) => {
     setSelectedAnswer(answer);
@@ -64,7 +48,7 @@ const TakeQuiz = () => {
     newAnswers[currentQuestion] = selectedAnswer;
     setAnswers(newAnswers);
 
-    if (currentQuestion < quiz.totalQuestions - 1) {
+    if (currentQuestion < currentQuiz.totalQuestions - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(newAnswers[currentQuestion + 1] || "");
     } else {
@@ -82,11 +66,11 @@ const TakeQuiz = () => {
   const calculateScore = () => {
     let correct = 0;
     answers.forEach((answer, index) => {
-      if (answer === quiz.questions[index].correct) {
+      if (answer === currentQuiz.questions[index].correct) {
         correct++;
       }
     });
-    return Math.round((correct / quiz.totalQuestions) * 100);
+    return Math.round((correct / currentQuiz.totalQuestions) * 100);
   };
 
   const formatTime = (seconds: number) => {
@@ -115,7 +99,7 @@ const TakeQuiz = () => {
                 <Check className="h-8 w-8 text-green-600" />
               </div>
               <CardTitle className="text-2xl">Quiz Completed!</CardTitle>
-              <CardDescription>Great job on completing the {quiz.title} quiz</CardDescription>
+              <CardDescription>Great job on completing the {currentQuiz.title} quiz</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="text-4xl font-bold text-green-600">
@@ -123,15 +107,15 @@ const TakeQuiz = () => {
               </div>
               <div className="grid grid-cols-3 gap-4 text-center">
                 <div>
-                  <div className="text-2xl font-bold text-blue-600">{answers.filter((answer, index) => answer === quiz.questions[index].correct).length}</div>
+                  <div className="text-2xl font-bold text-blue-600">{answers.filter((answer, index) => answer === currentQuiz.questions[index].correct).length}</div>
                   <div className="text-sm text-gray-600">Correct</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-red-600">{quiz.totalQuestions - answers.filter((answer, index) => answer === quiz.questions[index].correct).length}</div>
+                  <div className="text-2xl font-bold text-red-600">{currentQuiz.totalQuestions - answers.filter((answer, index) => answer === currentQuiz.questions[index].correct).length}</div>
                   <div className="text-sm text-gray-600">Incorrect</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-purple-600">{quiz.totalQuestions}</div>
+                  <div className="text-2xl font-bold text-purple-600">{currentQuiz.totalQuestions}</div>
                   <div className="text-sm text-gray-600">Total</div>
                 </div>
               </div>
@@ -139,8 +123,16 @@ const TakeQuiz = () => {
                 <Button asChild>
                   <Link to="/student-dashboard">Back to Dashboard</Link>
                 </Button>
-                <Button variant="outline" asChild>
-                  <Link to="/take-quiz">Take Another Quiz</Link>
+                <Button variant="outline" onClick={() => {
+                  const newQuiz = generateQuiz();
+                  setCurrentQuiz(newQuiz);
+                  setCurrentQuestion(0);
+                  setSelectedAnswer("");
+                  setAnswers([]);
+                  setTimeLeft(180);
+                  setQuizCompleted(false);
+                }}>
+                  Take Another Quiz
                 </Button>
               </div>
             </CardContent>
@@ -165,7 +157,7 @@ const TakeQuiz = () => {
                 <Clock className="h-5 w-5 text-orange-600" />
                 <span className="font-bold text-orange-600">{formatTime(timeLeft)}</span>
               </div>
-              <Badge variant="outline">{currentQuestion + 1} of {quiz.totalQuestions}</Badge>
+              <Badge variant="outline">{currentQuestion + 1} of {currentQuiz.totalQuestions}</Badge>
             </div>
           </div>
         </div>
@@ -177,14 +169,14 @@ const TakeQuiz = () => {
           <CardHeader className="text-center">
             <div className="flex items-center justify-center space-x-2 mb-2">
               <BookOpen className="h-6 w-6 text-blue-600" />
-              <Badge variant="secondary">{quiz.subject}</Badge>
-              <Badge variant="outline">{quiz.difficulty}</Badge>
+              <Badge variant="secondary">{currentQuiz.subject}</Badge>
+              <Badge variant="outline">{currentQuiz.difficulty}</Badge>
             </div>
-            <CardTitle className="text-2xl">{quiz.title}</CardTitle>
-            <CardDescription>Question {currentQuestion + 1} of {quiz.totalQuestions}</CardDescription>
+            <CardTitle className="text-2xl">{currentQuiz.title}</CardTitle>
+            <CardDescription>Question {currentQuestion + 1} of {currentQuiz.totalQuestions}</CardDescription>
           </CardHeader>
           <CardContent>
-            <Progress value={((currentQuestion + 1) / quiz.totalQuestions) * 100} className="h-3" />
+            <Progress value={((currentQuestion + 1) / currentQuiz.totalQuestions) * 100} className="h-3" />
           </CardContent>
         </Card>
 
@@ -192,12 +184,12 @@ const TakeQuiz = () => {
         <Card>
           <CardHeader>
             <CardTitle className="text-xl">
-              {quiz.questions[currentQuestion].question}
+              {currentQuiz.questions[currentQuestion].question}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <RadioGroup value={selectedAnswer} onValueChange={handleAnswerSelect}>
-              {quiz.questions[currentQuestion].options.map((option, index) => (
+              {currentQuiz.questions[currentQuestion].options.map((option, index) => (
                 <div key={index} className="flex items-center space-x-2 p-4 border rounded-lg hover:bg-gray-50 transition-colors">
                   <RadioGroupItem value={option} id={`option-${index}`} />
                   <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer text-base">
@@ -223,7 +215,7 @@ const TakeQuiz = () => {
                 disabled={!selectedAnswer}
                 className="min-w-24"
               >
-                {currentQuestion === quiz.totalQuestions - 1 ? (
+                {currentQuestion === currentQuiz.totalQuestions - 1 ? (
                   <>
                     <Check className="h-4 w-4 mr-2" />
                     Finish
@@ -246,7 +238,7 @@ const TakeQuiz = () => {
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
-              {quiz.questions.map((_, index) => (
+              {currentQuiz.questions.map((_, index) => (
                 <Button
                   key={index}
                   variant={index === currentQuestion ? "default" : answers[index] ? "secondary" : "outline"}

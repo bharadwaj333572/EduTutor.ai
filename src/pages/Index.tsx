@@ -3,12 +3,22 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { GraduationCap, Brain, BarChart3, Users, BookOpen, Zap } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
+import { useQuiz } from "@/contexts/QuizContext";
+import { generateQuiz } from "@/services/quizGenerator";
 
 const Index = () => {
   const { user, logout } = useAuth();
+  const { setCurrentQuiz } = useQuiz();
+  const navigate = useNavigate();
+
+  const handleStartLearning = () => {
+    const newQuiz = generateQuiz();
+    setCurrentQuiz(newQuiz);
+    navigate('/take-quiz');
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
@@ -83,11 +93,15 @@ const Index = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <Button className="w-full" size="lg" asChild>
-                  <Link to={user?.role === 'student' ? '/student-dashboard' : '/login'}>
+                {user?.role === 'student' ? (
+                  <Button className="w-full" size="lg" onClick={handleStartLearning}>
                     Start Learning
-                  </Link>
-                </Button>
+                  </Button>
+                ) : (
+                  <Button className="w-full" size="lg" onClick={handleStartLearning}>
+                    Start Learning
+                  </Button>
+                )}
               </CardContent>
             </Card>
 
