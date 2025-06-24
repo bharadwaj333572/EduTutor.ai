@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Brain, BookOpen, Loader, Lightbulb, Target } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { MultiThemeToggle } from "@/components/MultiThemeToggle";
+import MultiThemeToggle from "@/components/MultiThemeToggle";
 import { generateEnhancedQuiz, getTopicDetails, EnhancedQuiz } from "@/services/enhancedQuizGenerator";
 
 const AIQuizGenerator = () => {

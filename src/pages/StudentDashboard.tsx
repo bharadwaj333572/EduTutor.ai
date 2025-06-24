@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,13 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { BookOpen, Trophy, Clock, TrendingUp, Play, History, User, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { MultiThemeToggle } from "@/components/MultiThemeToggle";
-import { NotificationCenter } from "@/components/NotificationCenter";
-import { DailyTasks } from "@/components/DailyTasks";
-import { AIAssistant } from "@/components/AIAssistant";
-import { SmartContentCreation } from "@/components/SmartContentCreation";
-import { AILearningPaths } from "@/components/AILearningPaths";
-import { Contact } from "@/components/Contact";
+import MultiThemeToggle from "@/components/MultiThemeToggle";
+import NotificationCenter from "@/components/NotificationCenter";
+import DailyTasks from "@/components/DailyTasks";
+import AIAssistant from "@/components/AIAssistant";
+import SmartContentCreation from "@/components/SmartContentCreation";
+import AILearningPaths from "@/components/AILearningPaths";
+import Contact from "@/components/Contact";
 
 const StudentDashboard = () => {
   const [currentStreak, setCurrentStreak] = useState(7);
