@@ -1,17 +1,39 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { GraduationCap, Brain, BarChart3, Users, BookOpen, Zap } from "lucide-react";
+import { GraduationCap, Brain, BarChart3, Users, BookOpen, Zap, User, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuiz } from "@/contexts/QuizContext";
 import { generateQuiz } from "@/services/quizGenerator";
+import MultiThemeToggle from "@/components/MultiThemeToggle";
+import NotificationCenter from "@/components/NotificationCenter";
+import StatsCards from "@/components/StatsCards";
+import QuickActions from "@/components/QuickActions";
+import RecentActivity from "@/components/RecentActivity";
+import ProgressOverview from "@/components/ProgressOverview";
+import AIAssistant from "@/components/AIAssistant";
+import SmartContentCreation from "@/components/SmartContentCreation";
+import Contact from "@/components/Contact";
 
 const Index = () => {
   const { user, logout } = useAuth();
   const { setCurrentQuiz } = useQuiz();
   const navigate = useNavigate();
+
+  // Dashboard state
+  const [currentStreak, setCurrentStreak] = useState(7);
+  const [totalQuizzes, setTotalQuizzes] = useState(24);
+  const [avgScore, setAvgScore] = useState(85);
+
+  const recentQuizzes = [
+    { id: 1, subject: "Computer Science", topic: "Python Programming", score: 92, date: "2024-01-20", status: "completed" },
+    { id: 2, subject: "Mathematics", topic: "Calculus", score: 78, date: "2024-01-19", status: "completed" },
+    { id: 3, subject: "Engineering", topic: "Thermodynamics", score: 95, date: "2024-01-18", status: "completed" },
+    { id: 4, subject: "Computer Science", topic: "JavaScript", score: null, date: "2024-01-21", status: "in-progress" }
+  ];
 
   const handleStartLearning = () => {
     console.log("Start Learning button clicked!");
@@ -47,12 +69,17 @@ const Index = () => {
               </span>
             </div>
             <div className="flex items-center space-x-4">
+              <NotificationCenter />
+              <MultiThemeToggle />
               <ThemeToggle />
               {user ? (
                 <div className="flex items-center space-x-4">
-                  <span className="text-sm text-gray-600 dark:text-gray-300">
-                    Welcome, {user.name}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <User className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      Welcome, {user.name}
+                    </span>
+                  </div>
                   <Button 
                     variant="outline" 
                     asChild
@@ -62,6 +89,7 @@ const Index = () => {
                     </Link>
                   </Button>
                   <Button variant="outline" onClick={logout}>
+                    <LogOut className="h-4 w-4 mr-2" />
                     Logout
                   </Button>
                 </div>
@@ -165,6 +193,49 @@ const Index = () => {
           </div>
         </div>
       </section>
+
+      {/* Dashboard Section - Only show if user is logged in */}
+      {user && (
+        <section className="py-20 bg-white dark:bg-gray-900">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="text-center mb-12">
+              <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                Your Learning Dashboard
+              </h2>
+              <p className="text-xl text-gray-600 dark:text-gray-300">
+                Track your progress and continue your learning journey
+              </p>
+            </div>
+
+            {/* Stats Cards */}
+            <StatsCards 
+              currentStreak={currentStreak}
+              totalQuizzes={totalQuizzes}
+              avgScore={avgScore}
+            />
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column */}
+              <div className="lg:col-span-1 space-y-6">
+                <QuickActions />
+                <AIAssistant />
+              </div>
+
+              {/* Middle Column */}
+              <div className="lg:col-span-1 space-y-6">
+                <RecentActivity recentQuizzes={recentQuizzes} />
+                <SmartContentCreation />
+              </div>
+
+              {/* Right Column */}
+              <div className="lg:col-span-1 space-y-6">
+                <ProgressOverview />
+                <Contact />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Features Section */}
       <section className="py-20 bg-white dark:bg-gray-900">

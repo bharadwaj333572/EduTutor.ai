@@ -3,6 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useQuiz } from "@/contexts/QuizContext";
+import { generateQuiz } from "@/services/quizGenerator";
 
 interface Quiz {
   id: number;
@@ -18,6 +21,39 @@ interface RecentActivityProps {
 }
 
 const RecentActivity = ({ recentQuizzes }: RecentActivityProps) => {
+  const navigate = useNavigate();
+  const { setCurrentQuiz } = useQuiz();
+
+  const handleQuizClick = (quiz: Quiz) => {
+    console.log("Quiz clicked:", quiz);
+    try {
+      if (quiz.status === 'in-progress') {
+        // Generate a new quiz for in-progress items
+        const newQuiz = generateQuiz();
+        console.log("Generated quiz for in-progress item:", newQuiz);
+        setCurrentQuiz(newQuiz);
+        navigate('/take-quiz');
+      } else {
+        // For completed quizzes, show history or retake
+        navigate('/quiz-history');
+      }
+    } catch (error) {
+      console.error("Error handling quiz click:", error);
+    }
+  };
+
+  const handleContinueQuiz = (quiz: Quiz) => {
+    console.log("Continue quiz clicked:", quiz);
+    try {
+      const newQuiz = generateQuiz();
+      console.log("Generated quiz to continue:", newQuiz);
+      setCurrentQuiz(newQuiz);
+      navigate('/take-quiz');
+    } catch (error) {
+      console.error("Error continuing quiz:", error);
+    }
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -27,7 +63,11 @@ const RecentActivity = ({ recentQuizzes }: RecentActivityProps) => {
       <CardContent>
         <div className="space-y-4">
           {recentQuizzes.map((quiz) => (
-            <div key={quiz.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+            <div 
+              key={quiz.id} 
+              className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+              onClick={() => handleQuizClick(quiz)}
+            >
               <div className="flex-1">
                 <div className="flex items-center space-x-3">
                   <div className="flex-shrink-0">
@@ -49,7 +89,16 @@ const RecentActivity = ({ recentQuizzes }: RecentActivityProps) => {
                 ) : (
                   <div className="text-right">
                     <Badge variant="outline">In Progress</Badge>
-                    <Button size="sm" className="ml-2">Continue</Button>
+                    <Button 
+                      size="sm" 
+                      className="ml-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleContinueQuiz(quiz);
+                      }}
+                    >
+                      Continue
+                    </Button>
                   </div>
                 )}
               </div>
