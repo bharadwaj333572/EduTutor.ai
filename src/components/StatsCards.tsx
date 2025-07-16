@@ -2,7 +2,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, BookOpen, TrendingUp, Clock } from "lucide-react";
 
-interface StatsCardsProps {
+interface StatsCardsProps 
+{
   currentStreak: number;
   totalQuizzes: number;
   avgScore: number;
