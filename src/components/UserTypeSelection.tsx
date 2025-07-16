@@ -5,7 +5,8 @@ import { BookOpen, Users, GraduationCap, Brain } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useQuiz } from "@/contexts/QuizContext";
-import { generateQuiz } from "@/services/quizGenerator";
+import { generateQuiz
+       } from "@/services/quizGenerator";
 
 const UserTypeSelection = () => {
   const { user } = useAuth();
